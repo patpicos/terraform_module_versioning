@@ -1,0 +1,71 @@
+pr:
+  - master
+  - main
+
+trigger: none
+
+variables:
+  - group: tf_module_testing_variable_group  # The variable group in the Azure Devops library   
+  # The variable group requires the following variables to be defined:
+  # KNOWN_HOSTS: SSH Host Key to get terraform modules
+  # PUBLIC_KEY: SSH Public Key used to get terraform modules
+  # MSI_ID: The MSI with permissions to read the secrets in the key vault with the SP credentials
+  # ARM_TENANT_ID: The tenant ID that will be used with the managed identity
+  # ARM_SUBSCRIPTION_ID: The subscription ID that will be used with the managed identity
+  # KEY_VAULT: The name of the key vault which contains the secrets for the SP credentials
+  # KEY_VAULT_SUBSCRIPTION: The subscription ID where the key vault resides in
+  # KV_CLIENT_ID: The name of the secret which contains the SP client ID in the key vault
+  # KV_CLIENT_SECRET: The name of the secret which contains the SP client secret in the key vault
+  # KV_TENANT_ID: The name of the secret which contains the tenant ID in the key vault  
+
+stages:
+  - stage: security_lint
+    displayName: Security Lint
+    pool: tf_module_testing_pool     # Agent pool used to run security lint
+    jobs:
+      - job: checkov_job
+        steps:
+        - checkout: self
+        - script: |
+              mkdir CheckovReport
+              checkov -d . -s
+              checkov -d . -s -o junitxml > $(System.DefaultWorkingDirectory)/CheckovReport/Checkov-Report.xml
+        - task: PublishTestResults@2
+          displayName: Publish checkov Test PublishTestResults
+          condition: succeededOrFailed()
+          inputs:
+            testResultsFormat: 'JUnit'
+            testResultsFiles: '**/*Checkov-Report.xml'
+            searchFolder: '$(System.DefaultWorkingDirectory)/CheckovReport'
+            mergeTestResults: false
+            testRunTitle: Checkov Scan
+            failTaskOnFailedTests: false
+            publishRunAttachments: true
+                
+  - stage: terratest
+    displayName: Run Terratest
+    pool: tf_module_testing_pool     # Agent pool used to run terratest
+    jobs:
+      - job: terratest_job
+        steps:
+        - checkout: self
+        - task: InstallSSHKey@0
+          displayName: Install an SSH key
+          inputs:
+            knownHostsEntry: $(KNOWN_HOSTS)   # SSH Host Keys for terraform modules
+            sshPublicKey: $(PUBLIC_KEY)       # Public Key used to access terraform modules
+            sshKeySecureFile: id_rsa          # Private Key file in Azure Devops Library used to access terraform modules
+        - script: |
+              set -e
+              az login --identity -u $(MSI_ID)
+              export ARM_CLIENT_ID=`az keyvault secret show --name $(KV_CLIENT_ID) --vault-name $(KEY_VAULT) --subscription $(KEY_VAULT_SUBSCRIPTION) --query value -o tsv`
+              export ARM_CLIENT_SECRET=`az keyvault secret show --name $(KV_CLIENT_SECRET) --vault-name $(KEY_VAULT) --subscription $(KEY_VAULT_SUBSCRIPTION) --query value -o tsv`
+              export ARM_TENANT_ID=`az keyvault secret show --name $(KV_TENANT_ID) --vault-name $(KEY_VAULT) --subscription $(KEY_VAULT_SUBSCRIPTION) --query value -o tsv`
+              export HOME=/home/adminuser
+              make test
+          env: {
+            MSI_ID: $(MSI_ID),
+            ARM_USE_MSI: true,
+            ARM_TENANT_ID: $(ARM_TENANT_ID),
+            ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+          }
