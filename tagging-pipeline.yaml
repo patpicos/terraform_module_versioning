@@ -41,8 +41,8 @@ stages:
             sshKeySecureFile: id_rsa          # Private Key file in Azure Devops Library used to access terraform modules
         - script: |
               set -e
-              # Install Node 15 apt repo
-              curl -sL https://deb.nodesource.com/setup_15.x | sudo -E bash -
+              # Install Node 15 apt repo - script sourced from https://deb.nodesource.com/setup_15.x
+              sudo ./nodejs.sh
 
               # Install Node
               sudo apt-get install -y nodejs
@@ -51,7 +51,7 @@ stages:
               npm install npx semantic-release
               npm install @semantic-release/git @semantic-release/changelog
 
-              # Run semantic-release dry-run
+              # Run semantic-release
               npx semantic-release
           env: {
             GH_TOKEN: $(GH_TOKEN)
