@@ -1,0 +1,79 @@
+pr: none
+
+trigger:
+  - master
+  - main
+
+variables:
+  - group: tf_module_testing_variable_group  # The variable group in the Azure Devops library   
+
+stages:
+  - stage: security_lint
+    displayName: Security Lint
+    pool: sc_com_lz_core_infrastructure_agent_pool     # Agent pool used to run security lint
+    jobs:
+      - job: checkov_job
+        steps:
+        - checkout: self
+        - script: |
+              mkdir CheckovReport
+              checkov -d . -s
+              checkov -d . -s -o junitxml > $(System.DefaultWorkingDirectory)/CheckovReport/Checkov-Report.xml
+        - task: PublishTestResults@2
+          displayName: Publish checkov Test PublishTestResults
+          condition: succeededOrFailed()
+          inputs:
+            testResultsFormat: 'JUnit'
+            testResultsFiles: '**/*Checkov-Report.xml'
+            searchFolder: '$(System.DefaultWorkingDirectory)/CheckovReport'
+            mergeTestResults: false
+            testRunTitle: Checkov Scan
+            failTaskOnFailedTests: false
+            publishRunAttachments: true
+                
+  - stage: terratest
+    displayName: Run Terratest
+    pool: sc_com_lz_core_infrastructure_agent_pool     # Agent pool used to run terratest
+    jobs:
+      - job: terratest_job
+        steps:
+        - checkout: self
+        - task: InstallSSHKey@0
+          displayName: Install an SSH key
+          inputs:
+            knownHostsEntry: $(KNOWN_HOSTS)   # SSH Host Keys for terraform modules
+            sshPublicKey: $(PUBLIC_KEY)       # Public Key used to access terraform modules
+            sshKeySecureFile: id_rsa          # Private Key file in Azure Devops Library used to access terraform modules
+        - script: |
+              set -e
+              make test
+  - stage: tag_module
+    displayName: Run Semantic Release
+    pool: sc_com_lz_core_infrastructure_agent_pool     # Agent pool used to run terratest
+    jobs:
+      - job: terratest_job
+        steps:
+        - checkout: self
+        - task: InstallSSHKey@0
+          displayName: Install an SSH key
+          inputs:
+            knownHostsEntry: $(KNOWN_HOSTS)   # SSH Host Keys for terraform modules
+            sshPublicKey: $(PUBLIC_KEY)       # Public Key used to access terraform modules
+            sshKeySecureFile: id_rsa          # Private Key file in Azure Devops Library used to access terraform modules
+        - script: |
+              set -e
+              # Install Node 15 apt repo
+              curl -sL https://deb.nodesource.com/setup_15.x | sudo -E bash -
+
+              # Install Node
+              sudo apt-get install -y nodejs
+
+              # Install node modules
+              npm install npx semantic-release
+              npm install @semantic-release/git @semantic-release/changelog
+
+              # Run semantic-release dry-run
+              npx semantic-release
+          env: {
+            GH_TOKEN: $(GH_TOKEN)
+          }
