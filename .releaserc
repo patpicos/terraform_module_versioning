@@ -19,7 +19,7 @@
             "release": "patch"
           },
           {
-            "type": "style",
+            "type": "test",
             "release": "patch"
           }
         ],
@@ -32,7 +32,12 @@
         }
       }
     ],
-    "@semantic-release/release-notes-generator",
+    ["@semantic-release/release-notes-generator", {
+      "preset": "angular",
+      "parserOpts": {
+        "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES", "BREAKING"]
+      }
+    }],
     "@semantic-release/changelog",
     [
       "@semantic-release/github",
