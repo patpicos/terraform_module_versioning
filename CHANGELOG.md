@@ -1,3 +1,10 @@
+# [2.5.0](https://github.com/picardsrcd/tagging_test/compare/2.4.1...2.5.0) (2021-02-09)
+
+
+### Features
+
+* **azureboard-7:** BREAKING CHANGE test ([41ce3f0](https://github.com/picardsrcd/tagging_test/commit/41ce3f0e6032ecaf2e8d0628cfa2e5716552adaf))
+
 ## [2.4.1](https://github.com/picardsrcd/tagging_test/compare/2.4.0...2.4.1) (2021-02-09)
 
 
