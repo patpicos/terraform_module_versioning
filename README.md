@@ -7,7 +7,7 @@ N/A
 
 ## Known Issues
 
-None
+None.
 
 ## Usage
 
