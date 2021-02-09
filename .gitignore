@@ -29,3 +29,8 @@
 
 # Ignored vscode files
 .vscode/
+
+*.log
+node_modules
+build
+npm-debug.log
