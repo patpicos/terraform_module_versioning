@@ -10,7 +10,7 @@ variables:
 stages:
                
   - stage: terratest
-    displayName: Run Terratest
+    displayName: Unit Testing
     pool: sc_com_lz_core_infrastructure_agent_pool     # Agent pool used to run terratest
     jobs:
       - job: terratest_job
