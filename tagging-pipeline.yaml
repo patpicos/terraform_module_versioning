@@ -30,7 +30,7 @@ stages:
     displayName: Run Semantic Release
     pool: sc_com_lz_core_infrastructure_agent_pool     # Agent pool used to run terratest
     jobs:
-      - job: terratest_job
+      - job: tag_module
         steps:
         - checkout: self
         - task: InstallSSHKey@0
