@@ -24,6 +24,7 @@ stages:
             sshKeySecureFile: id_rsa          # Private Key file in Azure Devops Library used to access terraform modules
         - script: |
               set -e
+              export HOME=/home/adminuser
               make test
   - stage: tag_module
     displayName: Run Semantic Release
