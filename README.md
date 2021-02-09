@@ -3,7 +3,7 @@ This is a sample repository to showcase the use of semantic-release tool to auto
 Terraform module on pushes to main/master branch
 
 ## Limitations
-
+N/A
 
 ## Known Issues
 
