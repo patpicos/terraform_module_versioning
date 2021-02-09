@@ -21,6 +21,10 @@
           {
             "type": "test",
             "release": "patch"
+          },
+          {
+            "type": "style",
+            "release": "patch"
           }
         ],
         "parserOpts": {
@@ -38,7 +42,9 @@
         "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES", "BREAKING"]
       }
     }],
-    "@semantic-release/changelog",
+    ["@semantic-release/changelog", {
+      "changelogFile": "CHANGELOG.md"
+  }],
     [
       "@semantic-release/github",
       {
