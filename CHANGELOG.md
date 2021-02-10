@@ -1,3 +1,23 @@
+# [4.0.0](https://github.com/picardsrcd/tagging_test/compare/3.0.1...4.0.0) (2021-02-10)
+
+
+### Bug Fixes
+
+* **azureboard-7:** fix tag stage condition ([d1f3d1b](https://github.com/picardsrcd/tagging_test/commit/d1f3d1b8ab1fcf1efaa859ff38375fee47ba520e))
+* **azureboard-7:** only run pipeline on main branch ([44d692d](https://github.com/picardsrcd/tagging_test/commit/44d692dae174c39c84d5ee1274e2061cd66d43d0))
+* **azureboard-7:** testing behavior for breaking in lowercase ([f93b9f8](https://github.com/picardsrcd/tagging_test/commit/f93b9f85dc4d2cba1b9f97eca95d3c284a468dfe))
+
+
+### Features
+
+* **azureboard-7:** cleaned up repo and expanded documentation ([388b670](https://github.com/picardsrcd/tagging_test/commit/388b670b9e97c8ca0cefc1812c0c8336d14dfd01))
+* **azureboard-7:** Combine pipeline stages ([68416ac](https://github.com/picardsrcd/tagging_test/commit/68416aceadc5ef77b94e829bd422c254d652dcd2))
+
+
+### BREAKING CHANGES
+
+* **azureboard-7:** attempt
+
 ## [3.0.1](https://github.com/picardsrcd/tagging_test/compare/3.0.0...3.0.1) (2021-02-10)
 
 
