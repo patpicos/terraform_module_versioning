@@ -36,7 +36,7 @@ stages:
             publishRunAttachments: true               
   - stage: terratest
     displayName: Unit Testing
-    pool: $(TERRAFORM_VALIDATION_POOL)     # Agent pool used to run terratest
+    pool: $(TERRAFORM_VALIDATION_POOL)
     # Only run during Pull Request
     condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
     jobs:
@@ -65,7 +65,7 @@ stages:
           }
   - stage: tag_module
     displayName: Tag, Version, and Release
-    pool: $(TERRAFORM_VALIDATION_POOL)     # Agent pool used to run terratest
+    pool: $(TERRAFORM_VALIDATION_POOL)
     # Only checking for main branch at this time.
     condition: and(in(variables['Build.Reason'], 'IndividualCI', 'BatchedCI'), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
     jobs:
