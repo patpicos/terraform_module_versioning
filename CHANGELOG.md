@@ -1,3 +1,5 @@
+## [3.1.1](https://github.com/picardsrcd/tagging_test/compare/3.1.0...3.1.1) (2021-02-10)
+
 # [3.1.0](https://github.com/picardsrcd/tagging_test/compare/3.0.1...3.1.0) (2021-02-10)
 
 
