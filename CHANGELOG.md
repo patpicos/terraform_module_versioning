@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/picardsrcd/tagging_test/compare/3.0.0...3.0.1) (2021-02-10)
+
+
+### Bug Fixes
+
+* **azureboard-7:** updated documents as a fix ([03eea70](https://github.com/picardsrcd/tagging_test/commit/03eea70eb051d963cfa0071f8899e189364a6e7c))
+
 # [3.0.0](https://github.com/picardsrcd/tagging_test/compare/2.5.0...3.0.0) (2021-02-09)
 
 
