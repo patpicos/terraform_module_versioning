@@ -64,4 +64,33 @@ Publishes tags to GitHub and creates a release. Adds the CHANGELOG.md to the rel
 N/A
 
 # Known Issues
-N/A
+
+If you do not use one of the commit messages that triggers a version bump of any kind,
+semantic-release will generate a tag value that exists already. As a result, the pipeline will fail
+with the following error:
+
+As a best practice, any merge to main branch should include commits following the angular
+conventions and should trigger a patch version bump.
+```
+2021-02-10T17:01:13.8549292Z [5:01:13 PM] [semantic-release] â€º âœ–  An error occurred while running semantic-release: Error: Command failed with exit code 128: git tag 3.1.0 eef4bec231cc305eff3b59bbbfca5606ebf367a6
+2021-02-10T17:01:13.8551050Z fatal: tag '3.1.0' already exists
+2021-02-10T17:01:13.8552329Z     at makeError (/home/azureadmin/devops-agent/agent-2.181.1/_work/node_modules/execa/lib/error.js:59:11)
+2021-02-10T17:01:13.8553784Z     at handlePromise (/home/azureadmin/devops-agent/agent-2.181.1/_work/node_modules/execa/index.js:114:26)
+2021-02-10T17:01:13.8554852Z     at processTicksAndRejections (node:internal/process/task_queues:94:5)
+2021-02-10T17:01:13.8557945Z     at async tag (/home/azureadmin/devops-agent/agent-2.181.1/_work/node_modules/semantic-release/lib/git.js:224:3)
+2021-02-10T17:01:13.8559666Z     at async run (/home/azureadmin/devops-agent/agent-2.181.1/_work/node_modules/semantic-release/index.js:191:5)
+2021-02-10T17:01:13.8561178Z     at async module.exports (/home/azureadmin/devops-agent/agent-2.181.1/_work/node_modules/semantic-release/index.js:260:22)
+2021-02-10T17:01:13.8563179Z     at async module.exports (/home/azureadmin/devops-agent/agent-2.181.1/_work/node_modules/semantic-release/cli.js:55:5) {
+2021-02-10T17:01:13.8565240Z   shortMessage: 'Command failed with exit code 128: git tag 3.1.0 eef4bec231cc305eff3b59bbbfca5606ebf367a6',
+2021-02-10T17:01:13.8566802Z   command: 'git tag 3.1.0 eef4bec231cc305eff3b59bbbfca5606ebf367a6',
+2021-02-10T17:01:13.8567979Z   exitCode: 128,
+2021-02-10T17:01:13.8568803Z   signal: undefined,
+2021-02-10T17:01:13.8569531Z   signalDescription: undefined,
+2021-02-10T17:01:13.8570644Z   stdout: '',
+2021-02-10T17:01:13.8571798Z   stderr: "fatal: tag '3.1.0' already exists",
+2021-02-10T17:01:13.8572753Z   failed: true,
+2021-02-10T17:01:13.8573598Z   timedOut: false,
+2021-02-10T17:01:13.8574472Z   isCanceled: false,
+2021-02-10T17:01:13.8576255Z   killed: false
+2021-02-10T17:01:13.8577681Z }
+```
