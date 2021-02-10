@@ -1,6 +1,6 @@
 # Overview
 This is a sample repository to showcase the use of semantic-release tool to automatically tag a
-Terraform module on pushes to main/master branch. 
+Terraform module on pushes to main/master branch.  
 
 The pipeline includes validation during pull requests:
 * Static Code Analysis with Checkov
