@@ -67,7 +67,7 @@ stages:
     displayName: Tag, Version, and Release
     pool: $(TERRAFORM_VALIDATION_POOL)     # Agent pool used to run terratest
     # Only checking for main branch at this time.
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main')) 
+    condition: and(in(variables['Build.Reason'], 'IndividualCI', 'BatchedCI'), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
     jobs:
       - job: tag_module
         steps:
