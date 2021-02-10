@@ -1,3 +1,15 @@
+# [3.0.0](https://github.com/picardsrcd/tagging_test/compare/2.5.0...3.0.0) (2021-02-09)
+
+
+### Bug Fixes
+
+* **azureboard-7:** Updated module ([19e45b1](https://github.com/picardsrcd/tagging_test/commit/19e45b1cf09d47d05325af2bdba6a7ffe219a009))
+
+
+### BREAKING CHANGES
+
+* **azureboard-7:** sample message to trigger full version bump
+
 # [2.5.0](https://github.com/picardsrcd/tagging_test/compare/2.4.1...2.5.0) (2021-02-09)
 
 
