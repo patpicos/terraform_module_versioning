@@ -82,7 +82,7 @@ stages:
               set -e
               # Install Node 15 apt repo - script sourced from https://deb.nodesource.com/setup_15.x
               # TODO: Move installation steps outside of pipeline and into a pre-built container
-              sudo ./nodejs.sh
+              sudo ./scripts/nodejs.sh
 
               # Install Node
               sudo apt-get install -y nodejs

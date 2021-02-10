@@ -15,5 +15,8 @@ func TestModuleDeployment(t *testing.T) {
 
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
+
+	// This is where assertions would go
+
 	fmt.Println("Test Complete")
 }
