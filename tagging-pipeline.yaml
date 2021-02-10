@@ -1,5 +1,9 @@
-pr: none
+# PR will run Static Code Analysis / Terratest
+pr:
+  - master
+  - main
 
+# CI Triggers will run for Versioning and Tagging
 trigger:
   - master
   - main
@@ -8,10 +12,35 @@ variables:
   - group: tf_module_testing_variable_group  # The variable group in the Azure Devops library   
 
 stages:
-               
+  - stage: security_lint
+    displayName: Static Code Analysis with Checkov
+    pool: $(TERRAFORM_VALIDATION_POOL)
+    # Only run during Pull Request
+    condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+    jobs:
+      - job: checkov_job
+        steps:
+        - checkout: self
+        - script: |
+              mkdir CheckovReport
+              checkov -d . -s
+              checkov -d . -s -o junitxml > $(System.DefaultWorkingDirectory)/CheckovReport/Checkov-Report.xml
+        - task: PublishTestResults@2
+          displayName: Publish checkov Test PublishTestResults
+          condition: succeededOrFailed()
+          inputs:
+            testResultsFormat: 'JUnit'
+            testResultsFiles: '**/*Checkov-Report.xml'
+            searchFolder: '$(System.DefaultWorkingDirectory)/CheckovReport'
+            mergeTestResults: false
+            testRunTitle: Checkov Scan
+            failTaskOnFailedTests: false
+            publishRunAttachments: true               
   - stage: terratest
     displayName: Unit Testing
-    pool: sc_com_lz_core_infrastructure_agent_pool     # Agent pool used to run terratest
+    pool: $(TERRAFORM_VALIDATION_POOL)     # Agent pool used to run terratest
+    # Only run during Pull Request
+    condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
     jobs:
       - job: terratest_job
         steps:
@@ -24,11 +53,23 @@ stages:
             sshKeySecureFile: id_rsa          # Private Key file in Azure Devops Library used to access terraform modules
         - script: |
               set -e
+              az login --identity -u $(MSI_ID)
+              export ARM_CLIENT_ID=`az keyvault secret show --name $(KV_CLIENT_ID) --vault-name $(KEY_VAULT) --subscription $(KEY_VAULT_SUBSCRIPTION) --query value -o tsv`
+              export ARM_CLIENT_SECRET=`az keyvault secret show --name $(KV_CLIENT_SECRET) --vault-name $(KEY_VAULT) --subscription $(KEY_VAULT_SUBSCRIPTION) --query value -o tsv`
+              export ARM_TENANT_ID=`az keyvault secret show --name $(KV_TENANT_ID) --vault-name $(KEY_VAULT) --subscription $(KEY_VAULT_SUBSCRIPTION) --query value -o tsv`
               export HOME=/home/adminuser
               make test
+          env: {
+            MSI_ID: $(MSI_ID),
+            ARM_USE_MSI: true,
+            ARM_TENANT_ID: $(ARM_TENANT_ID),
+            ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+          }
   - stage: tag_module
-    displayName: Run Semantic Release
-    pool: sc_com_lz_core_infrastructure_agent_pool     # Agent pool used to run terratest
+    displayName: Tag, Version, and Release
+    pool: $(TERRAFORM_VALIDATION_POOL)     # Agent pool used to run terratest
+    # Only checking for main branch at this time.
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main')) 
     jobs:
       - job: tag_module
         steps:
@@ -42,6 +83,7 @@ stages:
         - script: |
               set -e
               # Install Node 15 apt repo - script sourced from https://deb.nodesource.com/setup_15.x
+              # TODO: Move installation steps outside of pipeline and into a pre-built container
               sudo ./nodejs.sh
 
               # Install Node
