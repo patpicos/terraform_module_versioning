@@ -1,11 +1,9 @@
 # PR will run Static Code Analysis / Terratest
 pr:
-  - master
   - main
 
 # CI Triggers will run for Versioning and Tagging
 trigger:
-  - master
   - main
 
 variables:
