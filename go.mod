@@ -1,4 +1,4 @@
-module tagging_test
+module terraform_module_versioning
 
 go 1.15
 
