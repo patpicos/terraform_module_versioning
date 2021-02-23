@@ -11,6 +11,7 @@ be expanded to include the master branch by updating the `pr` and `triggers` and
 
 Note: to reduce the retrieval of external scripts and piping directly to bash for execution, the script to install Node JS on Ubuntu has been persisted in this sample repository.
 
+
 # Requirements
 ## Pipeline
 The sample pipeline defined in this repository assumes the following to be in place:
